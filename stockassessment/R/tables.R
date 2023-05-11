@@ -14,7 +14,7 @@ tableit <-function (fit, what, x=fit$data$years, trans=function(x)x,...){
 tableit.sam <- function (fit, what, x=fit$data$years, trans=function(x)x,...){
    idx<-names(fit$sdrep$value)==what
    y<-fit$sdrep$value[idx]
-   ci<-y+fit$sdrep$sd[idx]%o%c(-2,2)
+   ci<-y+fit$sdrep$sd[idx]%o%c(qnorm(0.025),qnorm(0.975))
    ret<-trans(cbind(y,ci))
    rownames(ret)<-x
    colnames(ret)<-c("Estimate","Low","High")
@@ -321,16 +321,16 @@ partable.sam <- function(fit,...){
   nam <- paste(nam, namadd, sep = "_")
   ret<-cbind(param, attr(param,"sd"))
   ex<-exp(ret[,1])
-  lo<-exp(ret[,1]-2*ret[,2])
-  hi<-exp(ret[,1]+2*ret[,2])
+  lo<-exp(ret[,1]+qnorm(0.025)*ret[,2])
+  hi<-exp(ret[,1]+qnorm(0.975)*ret[,2])
   ret<-cbind(ret,ex,lo,hi)
   colnames(ret)<-c("par", "sd(par)", "exp(par)", "Low", "High")
   rownames(ret)<-nam
   return(ret)
 }
 
-##' model table 
-##' @param fits A sam fit as returned from the sam.fit function, or a collection c(fit1, fit2, ...) of such fits  
+##' model table
+##' @param fits A sam fit as returned from the sam.fit function, or a collection c(fit1, fit2, ...) of such fits
 ##' @param ... extra arguments not currently used
 ##' @details ...
 ##' @importFrom stats AIC pchisq

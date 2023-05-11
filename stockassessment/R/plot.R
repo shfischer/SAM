@@ -9,16 +9,16 @@
 ##' @param add logical, plotting is to be added on existing plot
 ##' @param ci logical, confidence intervals should be plotted
 ##' @param cicol color to plot the confidence polygon
-##' @param addCI A logical vector indicating if confidence intervals should be plotted for the added fits.  
+##' @param addCI A logical vector indicating if confidence intervals should be plotted for the added fits.
 ##' @param drop number of years to be left unplotted at the end.
-##' @param unnamed.basename the name to assign an unnamed basefit 
+##' @param unnamed.basename the name to assign an unnamed basefit
 ##' @param xlim xlim for the plot
 ##' @param ylim ylim for the plot
 ##' @param ylimAdd values to add when calculating ylim for the plot
 ##' @param ... extra arguments transferred to plot
 ##' @importFrom graphics plot polygon grid lines
 ##' @importFrom grDevices gray
-##' @details The basic plotting used bu many of the plotting functions (e.g. ssbplot, fbarplot ...) 
+##' @details The basic plotting used bu many of the plotting functions (e.g. ssbplot, fbarplot ...)
 plotit <-function (fit, what,...){
     UseMethod("plotit")
 }
@@ -29,7 +29,7 @@ plotit.sam <- function(fit, what, x=fit$data$years, ylab=what, xlab="Years", ex=
                    addCI=NA, drop=0, unnamed.basename="current", xlim=NULL,ylim=NULL,ylimAdd=NA,...){
     idx <- names(fit$sdrep$value)==what
     y <- fit$sdrep$value[idx]
-    lowhig <- y+fit$sdrep$sd[idx]%o%c(-2,2)
+    lowhig <- y+fit$sdrep$sd[idx]%o%c(qnorm(0.025),qnorm(0.975))
     didx <- 1:(length(x)-drop)
     if(missing(xlim)){
       xr <- range(x)
@@ -860,7 +860,7 @@ parplot.samset <- function(fit, cor.report.limit=0.95, ...){
   lowcor<-lapply(1:nrow(corrs),function(i)corrs[i,][corrs[i,]<(-cor.report.limit)]*100)
   names(lowcor) <- nam
   for(i in 1:length(param)){
-    m <- param[[i]]+t(c(-2,0,2)%o%attr(param[[i]],"sd"))  
+    m <- param[[i]]+t(c(qnorm(0.025),0,qnorm(0.975))%o%attr(param[[i]],"sd"))
     if(i==1){
       mat <- cbind(m,0)
       rownames(mat) <- nam
